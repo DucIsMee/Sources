@@ -6,6 +6,7 @@
 #include <iostream>
 #include <thread>
 #include <atomic>
+#include <cstring>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -15,7 +16,6 @@ using namespace std;
 #define PORT 5000
 #define IP   "127.0.0.1"
 
-atomic<bool> serverDone(false);
 double minReceived = 1e18;
 
 void receiveLoop() {
@@ -26,17 +26,18 @@ void receiveLoop() {
         return;
     }
 
-    // Cho phep reuse port
+    // Fix Termux: cast void*
     int opt = 1;
-    setsockopt(srv, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    setsockopt(srv, SOL_SOCKET, SO_REUSEADDR, (void*)&opt, sizeof(opt));
 
-    // Bind
-    sockaddr_in addr{};
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(PORT);
-    inet_pton(AF_INET, IP, &addr.sin_addr);
+    // Bind - dung memset thay vi {}
+    struct sockaddr_in addr;
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family      = AF_INET;
+    addr.sin_port        = htons(PORT);
+    addr.sin_addr.s_addr = inet_addr(IP);
 
-    if (bind(srv, (sockaddr*)&addr, sizeof(addr)) < 0) {
+    if (bind(srv, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
         cout << "[CT2] Loi bind port " << PORT << "!" << endl;
         close(srv);
         return;
