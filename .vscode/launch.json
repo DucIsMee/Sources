@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "De09",
+      "request": "launch",
+      "mainClass": "De09",
+      "projectName": "Sources_64e2ab76"
+    },
+    {
+      "type": "java",
       "name": "de11cli",
       "request": "launch",
       "mainClass": "de11.de11cli",
