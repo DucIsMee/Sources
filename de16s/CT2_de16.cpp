@@ -1,14 +1,52 @@
 #include <bits/stdc++.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
 #include <unistd.h>
+
 using namespace std;
-bool recv_all(int s,char*buf,int len){int t=0;while(t<len){ssize_t r=recv(s,buf+t,len-t,0); if(r<=0) return false; t+=r;} return true;}
-int main(){
-  int ls=socket(AF_INET,SOCK_STREAM,0);
-  int opt=1; setsockopt(ls,SOL_SOCKET,SO_REUSEADDR,&opt,sizeof(opt));
-  sockaddr_in a{AF_INET,htons(5000),{INADDR_ANY}}; bind(ls,(sockaddr*)&a,sizeof(a)); listen(ls,1);
-  int c=accept(ls,nullptr,nullptr);
-  while(true){ int32_t nn; if(!recv_all(c,(char*)&nn,sizeof(nn))){ break;} int n=ntohl(nn); if(n<=0) break; vector<int32_t>v(n); for(int i=0;i<n;i++){int32_t x; if(!recv_all(c,(char*)&x,sizeof(x))){ goto END;} v[i]=ntohl(x);} for(int x:v) cout<<x<<" "; cout<<"\n"; }
-END: close(c); close(ls); return 0;
+
+bool recv_all(int s, char* buf, int len) {
+  for (int recvd = 0; recvd < len; ) {
+    int n = recv(s, buf + recvd, len - recvd, 0);
+    if (n <= 0) return false;
+    recvd += n;
+  }
+  return true;
+}
+
+int main() {
+  int listen_sock = socket(AF_INET, SOCK_STREAM, 0);
+  int opt = 1;
+  setsockopt(listen_sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
+  sockaddr_in addr{};
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(5000);
+  addr.sin_addr.s_addr = INADDR_ANY;
+
+  bind(listen_sock, (sockaddr*)&addr, sizeof(addr));
+  listen(listen_sock, 1);
+
+  int client = accept(listen_sock, nullptr, nullptr);
+  while (true) {
+    int32_t nn;
+    if (!recv_all(client, (char*)&nn, sizeof(nn))) break;
+
+    int n = ntohl(nn);
+    if (n <= 0) break;
+
+    vector<int32_t> a(n);
+    for (int i = 0; i < n; ++i) {
+      if (!recv_all(client, (char*)&a[i], sizeof(a[i]))) goto done;
+      a[i] = ntohl(a[i]);
+    }
+
+    for (int x : a) cout << x << ' ';
+    cout << '\n';
+  }
+
+done:
+  close(client);
+  close(listen_sock);
+  return 0;
 }

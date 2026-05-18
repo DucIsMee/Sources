@@ -2,6 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "java",
+      "name": "de05cli",
+      "request": "launch",
+      "mainClass": "de05cli",
+      "projectName": "Sources_64e2ab76"
+    },
+    {
+      "type": "java",
+      "name": "de05sv",
+      "request": "launch",
+      "mainClass": "de05sv",
+      "projectName": "Sources_64e2ab76"
+    },
+    {
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
       "request": "launch",
