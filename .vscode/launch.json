@@ -3,6 +3,27 @@
   "configurations": [
     {
       "type": "java",
+      "name": "de02",
+      "request": "launch",
+      "mainClass": "de02",
+      "projectName": "Sources_64e2ab76"
+    },
+    {
+      "type": "java",
+      "name": "de01ct2",
+      "request": "launch",
+      "mainClass": "de01ct2",
+      "projectName": "Sources_64e2ab76"
+    },
+    {
+      "type": "java",
+      "name": "de01",
+      "request": "launch",
+      "mainClass": "de01",
+      "projectName": "Sources_64e2ab76"
+    },
+    {
+      "type": "java",
       "name": "De09",
       "request": "launch",
       "mainClass": "De09",
